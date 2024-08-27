@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mot de Passe Oublié</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        h1 {
+            color: #04274d;
+            font-size: 24px;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label {
+            font-size: 14px;
+            color: #333;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+        .input-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btnn {
+            background-color: #898a8b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .btnn:hover {
+            background-color: #898a8b;
+            transform: scale(1.05);
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes shake {
+            0% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trouvez votre compte</h1>
+        <p><b>Veuillez entrer votre e-mail ou votre numéro de mobile pour rechercher votre compte.</b></p>
+        <form id="reset-form" action="reset_password.php" method="post">
+            <div class="input-group">
+                <label for="email"></label>
+                <input type="email" id="email" name="email" placeholder="Email ou numéro de mobile">
+            </div>
+            <button type="submit" id="search-btn" class="btn">Rechercher</button>
+            <button type="reset" id="cancel-btn" class="btnn" >Annuler</button>
+        </form>
+        <div class="error-message" id="error-message"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('reset-form');
+    const searchBtn = document.getElementById('search-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const errorMessage = document.getElementById('error-message');
+
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+    }
+
+
+    function hideError() {
+        errorMessage.textContent = '';
+        errorMessage.style.display = 'none';
+    }
+
+
+    form.addEventListener('submit', function(event) {
+        
+        const emailInput = document.getElementById('email');
+        if (!emailInput.value) {
+            event.preventDefault();
+            showError('Veuillez entrer votre e-mail.');
+        } else {
+            hideError();
+        }
+    });
+
+    cancelBtn.addEventListener('click', function() {
+        hideError();
+        form.reset();
+    });
+});
+
+    </script>
+</body>
+</html>

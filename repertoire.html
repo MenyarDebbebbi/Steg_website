@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Répertoire des Utilisateurs</title>
+    <link rel="stylesheet" href="stylee.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .icon {
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      .icon.delete-icon {
+        color: red;
+      }
+
+      .icon.edit-icon {
+        color: blue;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Répertoire Téléphonique</h1>
+      <div>
+        <button id="addManagerBtn" class="">Ajouter un Gestionnaire</button>
+      </div>
+
+      <input
+        type="text"
+        id="searchBar"
+        placeholder="Rechercher par nom ou téléphone..."
+      />
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>Actions</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Poste</th>
+            <th>Division</th>
+            <th>Service</th>
+            <th>Unité</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button id="downloadBtn" class="btn">
+        Télécharger le répertoire en PDF
+      </button>
+    </div>
+
+    <!-- Modal -->
+    <div id="addManagerModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Créer un Gestionnaire</h2>
+        <form id="createManagerForm">
+          <label for="name">Nom:</label>
+          <input type="text" id="name" name="name" required />
+
+          <label for="surname">Prénom:</label>
+          <input type="text" id="surname" name="surname" required />
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="service">Service :</label>
+          <input type="number" id="service" name="service" required />
+
+          <label for="Tel">Tel Mobile:</label>
+          <input type="number" id="Tel" name="Tel" required />
+
+          <label for="Poste">Poste :</label>
+          <input type="number" id="Poste" name="Poste" />
+
+          <label for="division">Division :</label>
+          <input type="number" id="division" name="division" required />
+
+          <label for="Matricule">Matricule :</label>
+          <input type="number" id="Matricule" name="Matricule" required />
+
+          <label for="password">Mot de Passe:</label>
+          <input type="password" id="password" name="password" required />
+
+          <button type="submit">Créer Gestionnaire</button>
+        </form>
+        <div id="message"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const { jsPDF } = window.jspdf;
+        const searchBar = document.querySelector("#searchBar");
+        const addManagerBtn = document.querySelector("#addManagerBtn");
+        const addManagerModal = document.querySelector("#addManagerModal");
+        const closeModal = document.querySelector(".close");
+        const downloadBtn = document.querySelector("#downloadBtn");
+
+        function populateTable(users) {
+          const tbody = document.querySelector("#userTable tbody");
+          tbody.innerHTML = ""; // Clear existing rows
+
+          users.forEach((user) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                        <td>
+                            <i class="fas fa-edit icon edit-icon" data-id="${
+                              user.id
+                            }"></i>
+                            <i class="fas fa-trash-alt icon delete-icon" data-id="${
+                              user.id
+                            }"></i>
+                        </td>
+                        <td>${user.nom || "N/A"}</td>
+                        <td>${user.prenom || "N/A"}</td>
+                        <td>${user.email || "N/A"}</td>
+                        <td>${user.telephone || "N/A"}</td>
+                        <td>${user.poste || "N/A"}</td>
+                        <td>${user.division_id || "N/A"}</td>
+                        <td>${user.service_id || "N/A"}</td>
+                        <td>${user.matricule || "N/A"}</td>
+                    `;
+            tbody.appendChild(row);
+
+            // Ajout des événements pour les icônes de modification et de suppression
+            row.querySelector(".edit-icon").addEventListener("click", () => {
+              // Logique pour l'action de modification
+              const userId = row.querySelector(".edit-icon").dataset.id;
+              console.log("Modifier", userId);
+              // Vous pouvez ouvrir une modal pour modifier l'utilisateur ou rediriger vers une page de modification
+            });
+
+            row.querySelector(".delete-icon").addEventListener("click", () => {
+              const userId = row.querySelector(".delete-icon").dataset.id;
+              if (
+                confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")
+              ) {
+                // Logique pour l'action de suppression
+                fetch(`user.php?action=delete&id=${userId}`, {
+                  method: "DELETE",
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data.success) {
+                      // Réactualiser la table
+                      searchUsers(searchBar.value);
+                    } else {
+                      alert("Erreur lors de la suppression : " + data.error);
+                    }
+                  })
+                  .catch((error) => console.error("Erreur :", error));
+              }
+            });
+          });
+        }
+
+        function searchUsers(query) {
+          fetch(`user.php?action=search&q=${encodeURIComponent(query)}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (Array.isArray(data)) {
+                populateTable(data);
+              } else {
+                console.error("Données invalides :", data);
+              }
+            })
+            .catch((error) => console.error("Erreur :", error));
+        }
+
+        function exportToPDF() {
+          const doc = new jsPDF();
+          const table = document.querySelector("#userTable");
+          const rows = Array.from(table.querySelectorAll("tbody tr")).map(
+            (row) =>
+              Array.from(row.querySelectorAll("td")).map(
+                (cell) => cell.innerText
+              )
+          );
+          const headers = Array.from(table.querySelectorAll("thead th")).map(
+            (header) => header.innerText
+          );
+
+          doc.autoTable({
+            head: [headers],
+            body: rows,
+          });
+
+          doc.save("repertoire.pdf");
+        }
+
+        searchBar.addEventListener("input", (event) => {
+          searchUsers(event.target.value);
+        });
+
+        // Show the modal
+        addManagerBtn.addEventListener("click", () => {
+          addManagerModal.style.display = "block";
+        });
+
+        // Close the modal
+        closeModal.addEventListener("click", () => {
+          addManagerModal.style.display = "none";
+        });
+
+        // Close the modal if user clicks outside of it
+        window.addEventListener("click", (event) => {
+          if (event.target === addManagerModal) {
+            addManagerModal.style.display = "none";
+          }
+        });
+
+        // Handle form submission
+        document
+          .getElementById("createManagerForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch("user.php", {
+              method: "POST",
+              body: JSON.stringify(Object.fromEntries(formData)),
+              headers: { "Content-Type": "application/json" },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                document.getElementById("message").innerText =
+                  data.message || data.error;
+                if (data.success) {
+                  addManagerModal.style.display = "none";
+                  // Optionally refresh the user table or other UI elements
+                  searchUsers(""); // Refresh user table
+                }
+              })
+              .catch((error) => {
+                document.getElementById("message").innerText =
+                  "Erreur: " + error.message;
+              });
+          });
+
+        // Add event listener to the download button
+        downloadBtn.addEventListener("click", exportToPDF);
+
+        // Initial fetch to populate table if needed
+        searchUsers("");
+      });
+    </script>
+  </body>
+</html>

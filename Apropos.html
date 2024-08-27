@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos - Répertoire Téléphonique</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <main>
+        <div class="container">
+            <h2>À propos de cette application</h2>
+            <p id="paragh">
+                Le répertoire téléphonique est une application conçue pour faciliter la gestion des contacts téléphoniques
+                au sein de notre organisation. Cette application permet aux utilisateurs de consulter, mettre à jour, et gérer
+                efficacement leurs coordonnées en ligne.
+            </p>
+            <p id="paragh">
+                Grâce à cette application, les agents peuvent facilement rechercher des numéros de téléphone, des emails,
+                et d'autres informations de contact. Les gestionnaires ont la capacité de superviser les mises à jour
+                effectuées par les utilisateurs, assurant ainsi que toutes les données sont exactes et à jour.
+            </p>
+            <p id="paragh">
+                L'application a été développée avec une attention particulière à la sécurité, garantissant que seules les
+                personnes autorisées peuvent accéder et modifier les informations sensibles. Elle est également conçue
+                pour être conviviale et accessible, permettant à tout utilisateur, quel que soit son niveau de compétence
+                technique, de l'utiliser sans difficulté.
+            </p>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Répertoire Téléphonique - Tous droits réservés</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+    const paragraphs = document.querySelectorAll("#paragh");
+    paragraphs.forEach((paragraph, index) => {
+        paragraph.style.opacity = "0";
+        paragraph.style.transition = `opacity 1s ease-in-out ${index * 0.5}s`;
+        setTimeout(() => {
+            paragraph.style.opacity = "1";
+        }, 100);
+    });
+});
+
+    </script>
+</body>
+</html>

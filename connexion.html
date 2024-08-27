@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Répertoire Téléphonique - Connexion</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header>
+      <div class="logo">
+        <img src="steeg.jpg" alt="STEG Logo" />
+      </div>
+      <nav>
+        <ul>
+          <li><a href="Apropos.html" target="_blank">A propos</a></li>
+          <li>
+            <a href="https://steg.com.tn/fr/index.html" target="_blank"
+              >Accueil</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="intro">
+        <h1>STEG</h1>
+        <b>
+          <p>Grâce à notre répertoire téléphonique,</p>
+          <p>trouvez et connectez-vous facilement avec vos collègues,</p>
+          <p>où que vous soyez.</p>
+        </b>
+      </div>
+      <div class="login-container">
+        <h2><b>Connexion</b></h2>
+
+        <!-- Le formulaire envoie les données à login.php via la méthode POST -->
+        <form id="loginForm" action="login.php" method="POST">
+          <div class="input-group">
+            <label for="username"><b>Nom d'utilisateur :</b></label> <br />
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Adresse e-mail ou numéro de tél."
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="password"><b>Mot de passe :</b></label
+            ><br />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Mot de passe"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn">Se connecter</button>
+        </form>
+        <a href="mdp.html" class="forgot-password">Mot de passe oublié ?</a>
+      </div>
+    </main>
+    <footer>
+      <p>&copy; 2024 Répertoire Téléphonique - Tous droits réservés</p>
+    </footer>
+  </body>
+</html>
