@@ -7,29 +7,29 @@ $_SESSION['error'] = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+    $matricule = trim($_POST['matricule']);
 
     // Vérifie si les champs sont non vides
-    if (empty($username) || empty($password)) {
+    if (empty($username) || empty($matricule)) {
         $_SESSION['error'] = "Veuillez remplir tous les champs.";
         header("Location: connexion.html");
         exit();
     }
 
     // Récupération de l'utilisateur depuis la base de données
-    $query = "SELECT * FROM utilisateurs WHERE email = :email";
+    $query = "SELECT * FROM utilisateurs WHERE nom = :nom";
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':email', $username);
+    $stmt->bindParam(':nom', $username);
     $stmt->execute();
 
     // Si l'utilisateur existe
     if ($stmt->rowCount() > 0) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         // Vérification du mot de passe en texte clair
-        if ($password === $user['mot_de_passe']) {
+        if ($matricule === $user['matricule']) {
             // Connexion réussie
             $_SESSION['id'] = $user['id'];
-            $_SESSION['email'] = $user['email'];
+            $_SESSION['nom'] = $user['nom'];
             header("Location: repertoire.html"); // Redirection vers la page répertoire
             exit();
         } else {
