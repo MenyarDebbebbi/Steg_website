@@ -101,19 +101,21 @@ function deleteUser($id)
     }
 }
 // Fonction pour modifier le fixe et le téléphone d'un utilisateur
+// Fonction pour modifier le fixe et le téléphone d'un utilisateur
 function updateUser($id, $data)
 {
     global $pdo;
-    var_dump($data, $id); //data 
-    die();
-    try {
 
+    try {
+        // Vérifier si les clés existent dans $data avant de les utiliser
+        $fixe = isset($data['fixe']) ? $data['fixe'] : null;
+        $telephone = isset($data['telephone']) ? $data['telephone'] : null;
 
         $query = "UPDATE utilisateurs SET fixe = :fixe, telephone = :telephone WHERE id = :id AND role = 'user'";
         $stmt = $pdo->prepare($query);
         $stmt->execute([
-            'fixe' => $data['fixe'],
-            'telephone' => $data['telephone'],
+            'fixe' => $fixe,
+            'telephone' => $telephone,
             'id' => $id
         ]);
 
@@ -126,6 +128,7 @@ function updateUser($id, $data)
         echo json_encode(['error' => 'Erreur lors de la mise à jour de l\'utilisateur', 'details' => $e->getMessage()]);
     }
 }
+
 
 function getselectData()
 {
